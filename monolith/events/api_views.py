@@ -9,7 +9,7 @@ from .models import Conference, Location, State
 
 class LocationListEncoder(ModelEncoder):
     model = Location
-    properties = ["name", "picture_url"]
+    properties = ["name", "picture_url", "id"]
 
 
 class LocationDetailEncoder(ModelEncoder):
@@ -29,7 +29,7 @@ class LocationDetailEncoder(ModelEncoder):
 
 class ConferenceListEncoder(ModelEncoder):
     model = Conference
-    properties = ["name"]
+    properties = ["name", "id"]
 
 
 class ConferenceDetailEncoder(ModelEncoder):
@@ -96,7 +96,7 @@ def api_list_conferences(request):
             safe=False,
         )
 
-
+@require_http_methods(["DELETE", "GET", "PUT"])
 def api_show_conference(request, pk):
     """
     Returns the details for the Conference model specified
@@ -122,16 +122,29 @@ def api_show_conference(request, pk):
         }
     }
     """
-    conference = Conference.objects.get(id=pk)
-    weather = get_weather_data(
-        conference.location.city,
-        conference.location.state.abbreviation,
-    )
-    return JsonResponse(
-        {"conference": conference, "weather": weather},
-        encoder=ConferenceDetailEncoder,
-        safe=False,
-    )
+    if request.method == "GET":
+        conference = Conference.objects.get(id=pk)
+        weather = get_weather_data(
+            conference.location.city,
+            conference.location.state.abbreviation,
+        )
+        return JsonResponse(
+            {"conference": conference, "weather": weather},
+            encoder=ConferenceDetailEncoder,
+        )
+    elif request.method == "DELETE":
+        try:
+            conference = Conference.objects.get(id=pk)
+            conference.delete()
+            return JsonResponse(
+                conference,
+                encoder=ConferenceDetailEncoder,
+                safe=False,
+            )
+        except Conference.DoesNotExist:
+            return JsonResponse({"message": "Does not exist"})
+
+
 
 
 @require_http_methods(["GET", "POST"])
