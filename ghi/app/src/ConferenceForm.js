@@ -97,7 +97,7 @@ function ConferenceForm() {
             </div>
             <div className="mb-3">
                 <label htmlFor="description">Description</label>
-                <textarea onChange={handleFormChange} value={formData.description} className="form-control" id="description" rows="3" name="description" className="form-control"></textarea>
+                <textarea onChange={handleFormChange} value={formData.description} id="description" rows="3" name="description" className="form-control"></textarea>
             </div>
             <div className="form-floating mb-3">
                 <input onChange={handleFormChange} value={formData.max_presentations} placeholder="Maximum presentations" required type="number" name="max_presentations" id="max_presentations" className="form-control" />
