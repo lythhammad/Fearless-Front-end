@@ -59,7 +59,7 @@ function AttendConferenceForm() {
     const handleEmailChange = (e) => {
     setEmail(e.target.value)
     }
-
+ 
     const handleConferenceChange = (e) => {
     setConference(e.target.value)
     }
